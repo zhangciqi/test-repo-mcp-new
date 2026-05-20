@@ -5,6 +5,7 @@
 
 class Game2048 {
     constructor() {
+        // 游戏状态
         this.grid = [];
         this.score = 0;
         this.bestScore = this.loadBestScore();
@@ -12,6 +13,7 @@ class Game2048 {
         this.hasWon = false;
         this.continueAfterWin = false;
 
+        // DOM元素
         this.tileContainer = document.getElementById('tile-container');
         this.gridBackground = document.getElementById('grid-background');
         this.currentScoreEl = document.getElementById('current-score');
@@ -21,6 +23,7 @@ class Game2048 {
         this.finalScoreEl = document.getElementById('final-score');
         this.instructionsEl = document.getElementById('instructions');
 
+        // 初始化
         this.init();
         this.setupEventListeners();
     }
@@ -42,11 +45,9 @@ class Game2048 {
         this.lastNewTile = null;
         this.lastMergedPositions = null;
 
-        // 清空方块容器（关键修复）
+        // 清空所有DOM元素
         this.tileContainer.innerHTML = '';
-
-        // 创建背景格子
-        this.createBackgroundGrid();
+        this.gridBackground.innerHTML = '';
 
         // 更新分数显示
         this.updateScoreDisplay();
@@ -54,6 +55,9 @@ class Game2048 {
         // 隐藏遮罩层
         this.winOverlay.classList.remove('active');
         this.gameoverOverlay.classList.remove('active');
+
+        // 创建背景格子
+        this.createBackgroundGrid();
 
         // 生成两个初始方块并渲染
         this.addRandomTile();
