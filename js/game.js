@@ -58,11 +58,10 @@ class Game2048 {
         // 清空方块容器
         this.tileContainer.innerHTML = '';
 
-        // 生成两个初始方块
-        this.addRandomTile();
-        this.addRandomTile();
+        // 新游戏开始时盘面为空，等待用户第一次操作再生成方块
+        this.newTiles = []; // 记录所有新方块位置
 
-        // 渲染新盘面
+        // 渲染空盘面
         this.render();
     }
 
@@ -184,6 +183,16 @@ class Game2048 {
     move(direction) {
         if (this.isAnimating) return;
         if (!this.gameStateActive()) return;
+
+        // 检查是否是第一次操作（空盘面）
+        const isFirstMove = this.grid.every(row => row.every(cell => cell === 0));
+        if (isFirstMove) {
+            // 第一次操作前生成两个初始方块
+            this.addRandomTile();
+            this.addRandomTile();
+            this.render();
+            return;
+        }
 
         // 执行移动
         const moved = this.executeMove(direction);
@@ -352,6 +361,11 @@ class Game2048 {
             const value = Math.random() < 0.9 ? 2 : 4;
             this.grid[randomCell.row][randomCell.col] = value;
             this.lastNewTile = randomCell;
+            
+            // 如果是初始化阶段，记录所有新方块
+            if (this.newTiles) {
+                this.newTiles.push(randomCell);
+            }
         }
     }
 
@@ -421,8 +435,12 @@ class Game2048 {
             }
         }
 
-        // 检查是否是新生成的方块
-        if (this.lastNewTile && this.lastNewTile.row === row && this.lastNewTile.col === col) {
+        // 检查是否是新生成的方块（支持多个新方块）
+        const newTiles = this.newTiles || [this.lastNewTile];
+        const isNewTile = newTiles.some(
+            pos => pos && pos.row === row && pos.col === col
+        );
+        if (isNewTile) {
             tile.classList.add('tile-new');
         }
 
