@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048游戏 - 快速测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p {
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .test-item {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .test-item h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .test-item p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .test-item .expected {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        
+        .status-pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        
+        .status-pass {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-fail {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-pass {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-pass:hover {
+            background: #45a049;
+        }
+        
+        .btn-fail {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-fail:hover {
+            background: #da190b;
+        }
+        
+        .console-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .console-box .log {
+            margin: 5px 0;
+        }
+        
+        .console-box .error {
+            color: #f44336;
+        }
+        
+        .console-box .success {
+            color: #4caf50;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .summary h3 {
+            margin-bottom: 15px;
+        }
+        
+        .summary .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        
+        .summary .stat {
+            text-align: center;
+        }
+        
+        .summary .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .summary .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .link-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .link-box h3 {
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+        
+        .link-box a {
+            color: #1976d2;
+            text-decoration: none;
+        }
+        
+        .link-box a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>2048游戏 - 功能测试页面</h1>
+        
+        <div class="info-box">
+            <h3>测试说明</h3>
+            <p>
+                本页面用于验证2048游戏的核心功能。请按照以下测试项逐一进行测试，
+                点击"通过"或"失败"按钮记录测试结果。所有测试完成后，查看页面底部的测试统计。
+            </p>
+            <p style="margin-top: 10px;">
+                <strong>游戏地址</strong>: <code>c:\Users\Administrator\Desktop\520\index.html</code>
+            </p>
+        </div>
+        
+        <div class="test-section">
+            <h2>P0 功能测试（核心玩法）</h2>
+            
+            <div class="test-item" data-test="init">
+                <h3>测试1: 游戏初始化</h3>
+                <p><strong>测试步骤</strong>: 打开游戏页面</p>
+                <p><strong>预期结果</strong>: <span class="expected">显示4x4网格，有2个初始方块（值为2或4），分数显示为0</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('init', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('init', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-init">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="move-left">
+                <h3>测试2: 向左移动</h3>
+                <p><strong>测试步骤</strong>: 按←键</p>
+                <p><strong>预期结果</strong>: <span class="expected">所有方块向左移动，相同数字合并</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('move-left', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('move-left', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-move-left">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="move-right">
+                <h3>测试3: 向右移动</h3>
+                <p><strong>测试步骤</strong>: 按→键</p>
+                <p><strong>预期结果</strong>: <span class="expected">所有方块向右移动，相同数字合并</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('move-right', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('move-right', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-move-right">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="move-up">
+                <h3>测试4: 向上移动</h3>
+                <p><strong>测试步骤</strong>: 按↑键</p>
+                <p><strong>预期结果</strong>: <span class="expected">所有方块向上移动，相同数字合并</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('move-up', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('move-up', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-move-up">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="move-down">
+                <h3>测试5: 向下移动</h3>
+                <p><strong>测试步骤</strong>: 按↓键</p>
+                <p><strong>预期结果</strong>: <span class="expected">所有方块向下移动，相同数字合并</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('move-down', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('move-down', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-move-down">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="score">
+                <h3>测试6: 分数计算</h3>
+                <p><strong>测试步骤</strong>: 进行多次合并操作</p>
+                <p><strong>预期结果</strong>: <span class="expected">分数等于合并方块数字之和（如4+4=8分）</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('score', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('score', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-score">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="win">
+                <h3>测试7: 胜利判定</h3>
+                <p><strong>测试步骤</strong>: 合成2048方块</p>
+                <p><strong>预期结果</strong>: <span class="expected">弹出胜利提示，显示"再来一局"和"继续游戏"按钮</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('win', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('win', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-win">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="gameover">
+                <h3>测试8: 失败判定</h3>
+                <p><strong>测试步骤</strong>: 无法移动时</p>
+                <p><strong>预期结果</strong>: <span class="expected">弹出失败提示，显示最终得分和"重新开始"按钮</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('gameover', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('gameover', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-gameover">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="newgame">
+                <h3>测试9: 新游戏功能</h3>
+                <p><strong>测试步骤</strong>: 点击"新游戏"按钮</p>
+                <p><strong>预期结果</strong>: <span class="expected">分数归零，网格重置，生成2个初始方块</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('newgame', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('newgame', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-newgame">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="touch">
+                <h3>测试10: 触摸操作（移动端）</h3>
+                <p><strong>测试步骤</strong>: 滑动屏幕</p>
+                <p><strong>预期结果</strong>: <span class="expected">响应触摸滑动，方向正确</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('touch', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('touch', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-touch">待测试</span>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>P1 功能测试（用户体验）</h2>
+            
+            <div class="test-item" data-test="animation-move">
+                <h3>测试11: 移动动画</h3>
+                <p><strong>测试步骤</strong>: 移动方块</p>
+                <p><strong>预期结果</strong>: <span class="expected">动画流畅，约150ms</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('animation-move', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('animation-move', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-animation-move">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="animation-merge">
+                <h3>测试12: 合并动画</h3>
+                <p><strong>测试步骤</strong>: 方块合并时</p>
+                <p><strong>预期结果</strong>: <span class="expected">合并时有缩放效果</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('animation-merge', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('animation-merge', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-animation-merge">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="animation-score">
+                <h3>测试13: 分数动画</h3>
+                <p><strong>测试步骤</strong>: 分数变化时</p>
+                <p><strong>预期结果</strong>: <span class="expected">分数跳动效果</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('animation-score', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('animation-score', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-animation-score">待测试</span>
+            </div>
+            
+            <div class="test-item" data-test="responsive">
+                <h3>测试14: 响应式布局</h3>
+                <p><strong>测试步骤</strong>: 调整窗口大小</p>
+                <p><strong>预期结果</strong>: <span class="expected">布局自适应，无溢出</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('responsive', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('responsive', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-responsive">待测试</span>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>P2 功能测试（数据持久化）</h2>
+            
+            <div class="test-item" data-test="bestscore">
+                <h3>测试15: 最高分保存</h3>
+                <p><strong>测试步骤</strong>: 关闭浏览器后重新打开</p>
+                <p><strong>预期结果</strong>: <span class="expected">最高分保持不变</span></p>
+                <div class="btn-group">
+                    <button class="btn btn-pass" onclick="markResult('bestscore', true)">通过 ✓</button>
+                    <button class="btn btn-fail" onclick="markResult('bestscore', false)">失败 ✗</button>
+                </div>
+                <span class="status status-pending" id="status-bestscore">待测试</span>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>浏览器控制台</h2>
+            <p>点击下方按钮检测游戏状态：</p>
+            <div class="btn-group">
+                <button class="btn btn-pass" onclick="runDiagnostic()">运行诊断</button>
+                <button class="btn btn-fail" onclick="clearConsole()">清除日志</button>
+            </div>
+            <div class="console-box" id="console">
+                <div class="log">等待诊断命令...</div>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <h3>测试结果统计</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="total-count">0</div>
+                    <div class="stat-label">总测试数</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="pass-count">0</div>
+                    <div class="stat-label">通过</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="fail-count">0</div>
+                    <div class="stat-label">失败</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="pass-rate">0%</div>
+                    <div class="stat-label">通过率</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="link-box">
+            <h3>相关链接</h3>
+            <p>
+                游戏文件: <a href="index.html" target="_blank">index.html</a><br>
+                测试报告: <a href="2048_TEST_REPORT.md" target="_blank">2048_TEST_REPORT.md</a><br>
+                测试清单: <a href="2048_TEST_CHECKLIST.md" target="_blank">2048_TEST_CHECKLIST.md</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // 测试结果存储
+        const testResults = {};
+        
+        // 标记测试结果
+        function markResult(testId, passed) {
+            testResults[testId] = passed;
+            
+            const statusEl = document.getElementById(`status-${testId}`);
+            statusEl.className = passed ? 'status status-pass' : 'status status-fail';
+            statusEl.textContent = passed ? '已通过' : '未通过';
+            
+            updateSummary();
+            logToConsole(`${testId}: ${passed ? 'PASS' : 'FAIL'}`, passed ? 'success' : 'error');
+        }
+        
+        // 更新统计
+        function updateSummary() {
+            const total = Object.keys(testResults).length;
+            const pass = Object.values(testResults).filter(v => v).length;
+            const fail = total - pass;
+            const rate = total > 0 ? Math.round((pass / total) * 100) : 0;
+            
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('pass-count').textContent = pass;
+            document.getElementById('fail-count').textContent = fail;
+            document.getElementById('pass-rate').textContent = rate + '%';
+        }
+        
+        // 日志输出
+        function logToConsole(message, type = 'info') {
+            const consoleEl = document.getElementById('console');
+            const logEl = document.createElement('div');
+            logEl.className = `log ${type}`;
+            logEl.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            consoleEl.appendChild(logEl);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+        
+        // 运行诊断
+        function runDiagnostic() {
+            logToConsole('开始诊断检查...', 'info');
+            
+            // 检查游戏元素
+            const gameContainer = document.getElementById('game-container');
+            const tileContainer = document.getElementById('tile-container');
+            const tiles = tileContainer ? tileContainer.querySelectorAll('.tile') : [];
+            
+            logToConsole(`游戏容器存在: ${!!gameContainer}`, 'info');
+            logToConsole(`方块容器存在: ${!!tileContainer}`, 'info');
+            logToConsole(`当前方块数量: ${tiles.length}`, 'info');
+            
+            // 检查分数
+            const scoreEl = document.getElementById('current-score');
+            const bestEl = document.getElementById('best-score');
+            logToConsole(`当前分数: ${scoreEl ? scoreEl.textContent : 'N/A'}`, 'info');
+            logToConsole(`最高分数: ${bestEl ? bestEl.textContent : 'N/A'}`, 'info');
+            
+            // 检查localStorage
+            const savedScore = localStorage.getItem('bestScore2048');
+            logToConsole(`保存的最高分: ${savedScore || 'N/A'}`, 'info');
+            
+            // 检查遮罩层
+            const winOverlay = document.getElementById('win-overlay');
+            const gameoverOverlay = document.getElementById('gameover-overlay');
+            logToConsole(`胜利遮罩可见: ${winOverlay && winOverlay.classList.contains('active')}`, 'info');
+            logToConsole(`失败遮罩可见: ${gameoverOverlay && gameoverOverlay.classList.contains('active')}`, 'info');
+            
+            // 检查CSS动画
+            const styles = getComputedStyle(document.querySelector('.tile') || document.createElement('div'));
+            logToConsole(`过渡动画: ${styles.transition}`, 'info');
+            
+            logToConsole('诊断完成！', 'success');
+        }
+        
+        // 清除日志
+        function clearConsole() {
+            document.getElementById('console').innerHTML = '<div class="log">日志已清除</div>';
+        }
+        
+        // 页面加载完成
+        window.onload = function() {
+            logToConsole('测试页面加载完成', 'success');
+            logToConsole('请在另一个标签页打开游戏进行测试', 'info');
+        };
+    </script>
+</body>
+</html>
