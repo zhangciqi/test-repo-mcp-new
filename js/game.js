@@ -45,23 +45,24 @@ class Game2048 {
         this.lastNewTile = null;
         this.lastMergedPositions = null;
 
-        // 清空所有DOM元素
-        this.tileContainer.innerHTML = '';
-        this.gridBackground.innerHTML = '';
-
-        // 更新分数显示
-        this.updateScoreDisplay();
-
         // 隐藏遮罩层
         this.winOverlay.classList.remove('active');
         this.gameoverOverlay.classList.remove('active');
 
-        // 创建背景格子
+        // 更新分数显示
+        this.updateScoreDisplay();
+
+        // 清空并重新创建背景格子
         this.createBackgroundGrid();
 
-        // 生成两个初始方块并渲染
+        // 清空方块容器
+        this.tileContainer.innerHTML = '';
+
+        // 生成两个初始方块
         this.addRandomTile();
         this.addRandomTile();
+
+        // 渲染新盘面
         this.render();
     }
 
@@ -361,10 +362,13 @@ class Game2048 {
         // 清空方块容器
         this.tileContainer.innerHTML = '';
 
-        // 计算格子尺寸
-        const containerRect = this.tileContainer.getBoundingClientRect();
-        const gap = window.innerWidth < 768 ? 8 : 10;
-        const cellSize = (containerRect.width - gap * 3) / 4;
+        // 计算格子尺寸 - 使用游戏容器计算
+        const gameContainer = document.getElementById('game-container');
+        const containerRect = gameContainer.getBoundingClientRect();
+        const isMobile = window.innerWidth < 768;
+        const gap = isMobile ? 8 : 10;
+        const padding = isMobile ? 8 : 10;
+        const cellSize = (containerRect.width - padding * 2 - gap * 3) / 4;
 
         // 渲染所有方块
         for (let row = 0; row < 4; row++) {
