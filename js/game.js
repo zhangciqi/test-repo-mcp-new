@@ -35,8 +35,13 @@ class Game2048 {
         // 重置动画状态
         this.isAnimating = false;
 
-        // 创建4x4空网格
-        this.grid = Array(4).fill(null).map(() => Array(4).fill(0));
+        // 创建4x4空网格（所有值为0）
+        this.grid = [
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+        ];
         this.score = 0;
         this.hasWon = false;
         this.continueAfterWin = false;
@@ -44,6 +49,7 @@ class Game2048 {
         // 清除动画状态
         this.lastNewTile = null;
         this.lastMergedPositions = null;
+        this.newTiles = [];
 
         // 隐藏遮罩层
         this.winOverlay.classList.remove('active');
@@ -55,13 +61,10 @@ class Game2048 {
         // 清空并重新创建背景格子
         this.createBackgroundGrid();
 
-        // 清空方块容器
+        // 清空方块容器（确保没有任何方块显示）
         this.tileContainer.innerHTML = '';
 
-        // 新游戏开始时盘面为空，等待用户第一次操作再生成方块
-        this.newTiles = []; // 记录所有新方块位置
-
-        // 渲染空盘面
+        // 渲染空盘面（此时grid全为0，所以不会渲染任何方块）
         this.render();
     }
 

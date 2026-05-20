@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container">
+        <!-- 标题区域 -->
         <header class="header">
             <h1 class="title">2048</h1>
             <div class="scores">
@@ -22,16 +23,24 @@
             </div>
         </header>
 
+        <!-- 操作提示 -->
         <p class="instructions" id="instructions">使用方向键 ↑ ↓ ← → 移动方块</p>
 
+        <!-- 游戏网格区域 -->
         <div class="game-container" id="game-container">
-            <div class="grid-background" id="grid-background"></div>
-            <div class="tile-container" id="tile-container"></div>
+            <div class="grid-background" id="grid-background">
+                <!-- 16个空格格子 -->
+            </div>
+            <div class="tile-container" id="tile-container">
+                <!-- 动态生成的方块 -->
+            </div>
         </div>
 
+        <!-- 新游戏按钮 -->
         <button class="new-game-btn" id="new-game-btn">新游戏</button>
     </div>
 
+    <!-- 胜利遮罩层 -->
     <div class="game-overlay" id="win-overlay">
         <div class="overlay-content">
             <h2>恭喜！你赢了！</h2>
@@ -42,6 +51,7 @@
         </div>
     </div>
 
+    <!-- 失败遮罩层 -->
     <div class="game-overlay" id="gameover-overlay">
         <div class="overlay-content">
             <h2>游戏结束！</h2>
@@ -50,6 +60,6 @@
         </div>
     </div>
 
-    <script src="js/game.js"></script>
+    <script src="js/game.js?v=2"></script>
 </body>
 </html>
