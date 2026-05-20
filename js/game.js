@@ -61,10 +61,14 @@ class Game2048 {
         // 清空并重新创建背景格子
         this.createBackgroundGrid();
 
-        // 清空方块容器（确保没有任何方块显示）
+        // 清空方块容器
         this.tileContainer.innerHTML = '';
 
-        // 渲染空盘面（此时grid全为0，所以不会渲染任何方块）
+        // 生成两个初始方块
+        this.addRandomTile();
+        this.addRandomTile();
+
+        // 渲染盘面
         this.render();
     }
 
@@ -186,16 +190,6 @@ class Game2048 {
     move(direction) {
         if (this.isAnimating) return;
         if (!this.gameStateActive()) return;
-
-        // 检查是否是第一次操作（空盘面）
-        const isFirstMove = this.grid.every(row => row.every(cell => cell === 0));
-        if (isFirstMove) {
-            // 第一次操作前生成两个初始方块
-            this.addRandomTile();
-            this.addRandomTile();
-            this.render();
-            return;
-        }
 
         // 执行移动
         const moved = this.executeMove(direction);
