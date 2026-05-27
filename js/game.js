@@ -78,7 +78,7 @@ class Game2048 {
         this.updateScoreDisplay();
         this.updateMoveCount();
         this.createBackgroundGrid();
-        this.tileContainer.innerHTML = '';
+        this.tileContainer.innerHTML = ''; 
         
         this.addRandomTile();
         this.addRandomTile();
@@ -86,7 +86,7 @@ class Game2048 {
     }
     
     createBackgroundGrid() {
-        this.gridBackground.innerHTML = '';
+        this.gridBackground.innerHTML = ''; 
         this.gridBackground.className = 'grid-background' + (this.gridSize === 5 ? ' grid-5' : '');
         
         const totalCells = this.gridSize * this.gridSize;
@@ -140,13 +140,12 @@ class Game2048 {
     }
     
     calculateDimensions() {
-        const gameContainer = document.getElementById('game-container');
-        const containerRect = gameContainer.getBoundingClientRect();
+        const tileContainer = document.getElementById('tile-container');
+        const containerRect = tileContainer.getBoundingClientRect();
         const isMobile = window.innerWidth < 768;
-        
+
         this.gap = this.gridSize === 5 ? 6 : (isMobile ? 8 : 10);
-        this.padding = isMobile ? 8 : 12;
-        this.cellSize = (containerRect.width - this.padding * 2 - this.gap * (this.gridSize - 1)) / this.gridSize;
+        this.cellSize = (containerRect.width - this.gap * (this.gridSize - 1)) / this.gridSize;
     }
     
     handleKeydown(e) {
@@ -228,7 +227,7 @@ class Game2048 {
         
         if (moved) {
             this.isAnimating = true;
-            this.moveCount++;
+            this.moveCount++; 
             this.moveHistory.push(direction);
             
             if (this.soundEnabled) {
@@ -314,7 +313,7 @@ class Game2048 {
         if (direction === 'down') rows.reverse();
         if (direction === 'right') cols.reverse();
         
-        return { rows, cols };
+        return { rows, cols }; 
     }
     
     findFarthestPosition(row, col, direction, merged) {
@@ -342,7 +341,7 @@ class Game2048 {
                     this.grid[nextRow][nextCol] === this.grid[row][col] &&
                     !merged[nextRow][nextCol]
                 ) {
-                    return { newRow: nextRow, newCol: nextCol, merge: true };
+                    return { newRow: nextRow, newCol: nextCol, merge: true }; 
                 }
                 break;
             }
@@ -351,7 +350,7 @@ class Game2048 {
             newCol = nextCol;
         }
         
-        return { newRow, newCol, merge: false };
+        return { newRow, newCol, merge: false }; 
     }
     
     addRandomTile() {
@@ -374,54 +373,64 @@ class Game2048 {
     }
     
     render() {
-        if (!this.cellSize) {
+        if (!this.cellSize || this.cellSize <= 0) {
             this.calculateDimensions();
         }
-        
+
         const existingTiles = new Map();
         const tilesToRemove = new Set();
-        
+
+        // 收集现有方块
         Array.from(this.tileContainer.children).forEach(tile => {
             const key = tile.getAttribute('data-position');
-            tilesToRemove.add(key);
-            existingTiles.set(key, tile);
+            if (key) {
+                tilesToRemove.add(key);
+                existingTiles.set(key, tile);
+            }
         });
-        
+
         const fragment = document.createDocumentFragment();
-        
+
+        // 渲染当前网格中的方块
         for (let row = 0; row < this.gridSize; row++) {
             for (let col = 0; col < this.gridSize; col++) {
                 const value = this.grid[row][col];
                 if (value !== 0) {
                     const key = `${row}-${col}`;
                     tilesToRemove.delete(key);
-                    
+
                     let tile = existingTiles.get(key);
                     const isNew = this.newTileSet.has(key);
                     const isMerged = this.lastMergedSet.has(key);
-                    
+
                     if (tile) {
+                        // 更新现有方块
                         if (tile.textContent !== value.toString()) {
                             tile.textContent = value;
                         }
                         this.updateTileClasses(tile, value, isNew, isMerged);
                     } else {
+                        // 创建新方块
                         tile = this.createTileElement(value, row, col, isNew, isMerged);
                     }
-                    
+
+                    // 更新位置和大小
                     this.updateTilePosition(tile, row, col);
+                    tile.setAttribute('data-position', key);
                     fragment.appendChild(tile);
                 }
             }
         }
-        
+
+        // 移除不需要的方块
         tilesToRemove.forEach(key => {
             const tile = existingTiles.get(key);
             if (tile) {
                 tile.remove();
             }
         });
-        
+
+        // 添加新方块到容器
         this.tileContainer.appendChild(fragment);
     }
     
@@ -459,16 +468,16 @@ class Game2048 {
         
         const baseFontSize = this.gridSize === 5 ? 28 : 44;
         const fontSize = Math.max(16, baseFontSize - Math.floor(Math.log2(value)) * 2);
-        tile.style.fontSize = `${fontSize}px`;
+        tile.style.fontSize = `${fontSize}px`; 
     }
     
     updateTilePosition(tile, row, col) {
         const x = col * (this.cellSize + this.gap);
         const y = row * (this.cellSize + this.gap);
         
-        tile.style.width = `${this.cellSize}px`;
-        tile.style.height = `${this.cellSize}px`;
-        tile.style.transform = `translate(${x}px, ${y}px)`;
+        tile.style.width = `${this.cellSize}px`; 
+        tile.style.height = `${this.cellSize}px`; 
+        tile.style.transform = `translate(${x}px, ${y}px)`; 
     }
     
     renderFrame = () => {
@@ -637,7 +646,7 @@ class Game2048 {
             merge: { freq: 600, duration: 0.08, type: 'sine' },
             win: { freq: 800, duration: 0.25, type: 'sine' },
             lose: { freq: 200, duration: 0.25, type: 'triangle' }
-        };
+        }; 
         
         const sound = sounds[type] || sounds.move;
         
@@ -721,7 +730,7 @@ class Game2048 {
             speed: this.gameSpeed,
             sound: this.soundEnabled,
             animation: this.animationEnabled
-        };
+        }; 
         localStorage.setItem('settings2048', JSON.stringify(settings));
     }
     
@@ -739,7 +748,7 @@ class Game2048 {
         const listEl = document.getElementById('leaderboard-list');
         
         if (leaderboard.length === 0) {
-            listEl.innerHTML = '<div class="empty-state">暂无记录</div>';
+            listEl.innerHTML = '<div class="empty-state">暂无记录</div>'; 
             return;
         }
         
@@ -770,7 +779,7 @@ class Game2048 {
                 month: '2-digit',
                 day: '2-digit'
             })
-        };
+        }; 
         
         leaderboard.push(newEntry);
         leaderboard.sort((a, b) => b.score - a.score);
