@@ -8,42 +8,119 @@
 </head>
 <body>
     <div class="container">
-        <!-- 标题区域 -->
         <header class="header">
             <h1 class="title">2048</h1>
             <div class="scores">
                 <div class="score-box">
-                    <div class="score-label">SCORE</div>
+                    <div class="score-label">分数</div>
                     <div class="score-value" id="current-score">0</div>
                 </div>
                 <div class="score-box">
-                    <div class="score-label">BEST</div>
+                    <div class="score-label">最高分</div>
                     <div class="score-value" id="best-score">0</div>
                 </div>
             </div>
         </header>
 
-        <!-- 操作提示 -->
+        <div class="controls">
+            <button class="control-btn" id="new-game-btn">新游戏</button>
+            <button class="control-btn" id="pause-btn">暂停</button>
+            <button class="control-btn" id="settings-btn">设置</button>
+            <button class="control-btn" id="leaderboard-btn">排行榜</button>
+            <button class="control-btn" id="theme-toggle-btn">主题</button>
+        </div>
+
         <p class="instructions" id="instructions">使用方向键 ↑ ↓ ← → 移动方块</p>
 
-        <!-- 游戏网格区域 -->
         <div class="game-container" id="game-container">
-            <div class="grid-background" id="grid-background">
-                <!-- 16个空格格子 -->
-            </div>
-            <div class="tile-container" id="tile-container">
-                <!-- 动态生成的方块 -->
+            <div class="grid-background" id="grid-background"></div>
+            <div class="tile-container" id="tile-container"></div>
+            <div class="pause-overlay" id="pause-overlay">
+                <div class="pause-content">
+                    <h2>游戏暂停</h2>
+                    <button class="overlay-btn" id="resume-btn">继续游戏</button>
+                </div>
             </div>
         </div>
 
-        <!-- 新游戏按钮 -->
-        <button class="new-game-btn" id="new-game-btn">新游戏</button>
+        <div class="game-info">
+            <div class="info-item">
+                <span class="info-label">步数:</span>
+                <span class="info-value" id="move-count">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">模式:</span>
+                <span class="info-value" id="game-mode">标准</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">网格:</span>
+                <span class="info-value" id="grid-size">4×4</span>
+            </div>
+        </div>
     </div>
 
-    <!-- 胜利遮罩层 -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>游戏设置</h2>
+                <button class="close-btn" id="settings-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label>网格大小:</label>
+                    <select id="grid-select">
+                        <option value="4">4×4</option>
+                        <option value="5">5×5</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label>游戏速度:</label>
+                    <select id="speed-select">
+                        <option value="slow">慢速</option>
+                        <option value="normal">标准</option>
+                        <option value="fast">快速</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="sound-toggle" checked>
+                        <span>音效</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="animation-toggle" checked>
+                        <span>动画效果</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="overlay-btn" id="apply-settings">应用设置</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="leaderboard-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>排行榜</h2>
+                <button class="close-btn" id="leaderboard-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="leaderboard-list" id="leaderboard-list">
+                    <div class="empty-state">暂无记录</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="overlay-btn" id="clear-leaderboard">清空记录</button>
+            </div>
+        </div>
+    </div>
+
     <div class="game-overlay" id="win-overlay">
         <div class="overlay-content">
             <h2>恭喜！你赢了！</h2>
+            <p class="final-score">最终得分：<span id="win-score">0</span></p>
             <div class="overlay-buttons">
                 <button class="overlay-btn" id="retry-btn">再来一局</button>
                 <button class="overlay-btn continue-btn" id="continue-btn">继续游戏</button>
@@ -51,7 +128,6 @@
         </div>
     </div>
 
-    <!-- 失败遮罩层 -->
     <div class="game-overlay" id="gameover-overlay">
         <div class="overlay-content">
             <h2>游戏结束！</h2>
@@ -60,6 +136,8 @@
         </div>
     </div>
 
-    <script src="js/game.js?v=2"></script>
+    <div class="score-popup" id="score-popup"></div>
+
+    <script src="js/game.js"></script>
 </body>
 </html>
