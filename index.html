@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048 游戏</title>
+    <script>
+        const savedTheme = localStorage.getItem('theme2048') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -27,6 +31,7 @@
             <button class="control-btn" id="pause-btn">暂停</button>
             <button class="control-btn" id="settings-btn">设置</button>
             <button class="control-btn" id="leaderboard-btn">排行榜</button>
+            <button class="control-btn" id="resume-btn-small">简历</button>
             <button class="control-btn" id="theme-toggle-btn">主题</button>
         </div>
 
@@ -49,6 +54,10 @@
                 <span class="info-value" id="move-count">0</span>
             </div>
             <div class="info-item">
+                <span class="info-label">时长:</span>
+                <span class="info-value" id="game-time">00:00</span>
+            </div>
+            <div class="info-item">
                 <span class="info-label">模式:</span>
                 <span class="info-value" id="game-mode">标准</span>
             </div>
@@ -58,6 +67,60 @@
             </div>
         </div>
     </div>
+
+    <!-- 启动加载页 -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">2048</div>
+            <div class="loading-tiles">
+                <span class="loading-tile l-t-1">2</span>
+                <span class="loading-tile l-t-2">4</span>
+                <span class="loading-tile l-t-3">8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新手引导弹窗 -->
+    <div class="modal-overlay" id="guide-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>欢迎来到 2048</h2>
+                <button class="close-btn" id="guide-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="guide-section">
+                    <h3>操作说明</h3>
+                    <p class="guide-desc">使用 <strong>方向键 ↑ ↓ ← →</strong> 移动方块，相同数字的方块碰撞后会合并。</p>
+                    <p class="guide-desc">目标：合成 <strong>2048</strong> 方块！</p>
+                    <p class="guide-desc mobile-only">移动端：在游戏区域<strong>滑动屏幕</strong>操控方块。</p>
+                    <p class="guide-desc">快捷键：<strong>P键</strong> 暂停/继续游戏。</p>
+                </div>
+                <div class="guide-section">
+                    <h3>功能一览</h3>
+                    <ul class="guide-list">
+                        <li>支持 3×3 / 4×4 / 5×5 多种网格</li>
+                        <li>可调节游戏速度（慢速/标准/快速）</li>
+                        <li>排行榜记录历史成绩</li>
+                        <li>成就系统等你解锁</li>
+                        <li>支持复制战绩与截图分享</li>
+                        <li>明暗双主题切换</li>
+                    </ul>
+                </div>
+                <div class="setting-item guide-checkbox">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="guide-no-show">
+                        <span>不再显示此提示</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="overlay-btn" id="guide-start">开始游戏</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成就解锁提示容器 -->
+    <div class="achievement-toast-container" id="achievement-toast-container"></div>
 
     <div class="modal-overlay" id="settings-modal">
         <div class="modal-content">
@@ -69,6 +132,7 @@
                 <div class="setting-item">
                     <label>网格大小:</label>
                     <select id="grid-select">
+                        <option value="3">3×3</option>
                         <option value="4">4×4</option>
                         <option value="5">5×5</option>
                     </select>
@@ -107,12 +171,132 @@
                 <button class="close-btn" id="leaderboard-close">×</button>
             </div>
             <div class="modal-body">
+                <div class="leaderboard-sort">
+                    <button class="sort-btn active" id="sort-score" data-sort="score">按分数</button>
+                    <button class="sort-btn" id="sort-time" data-sort="time">按时间</button>
+                </div>
                 <div class="leaderboard-list" id="leaderboard-list">
                     <div class="empty-state">暂无记录</div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="overlay-btn" id="clear-leaderboard">清空记录</button>
+                <button class="overlay-btn danger-btn" id="clear-leaderboard">清空记录</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通用确认弹窗 -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-content confirm-dialog">
+            <div class="modal-header">
+                <h2 id="confirm-title">确认操作</h2>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">确定要执行此操作吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="overlay-btn cancel-btn" id="confirm-cancel">取消</button>
+                <button class="overlay-btn danger-btn" id="confirm-ok">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 昵称输入弹窗 -->
+    <div class="modal-overlay" id="nickname-modal">
+        <div class="modal-content confirm-dialog">
+            <div class="modal-header">
+                <h2>恭喜！</h2>
+            </div>
+            <div class="modal-body">
+                <p class="nickname-score">你的得分：<strong id="nickname-score-display">0</strong></p>
+                <p>请输入你的昵称，上榜吧！</p>
+                <input type="text" class="nickname-input" id="nickname-input" placeholder="输入昵称..." maxlength="12">
+            </div>
+            <div class="modal-footer">
+                <button class="overlay-btn cancel-btn" id="nickname-skip">跳过</button>
+                <button class="overlay-btn" id="nickname-submit">上榜</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人简历弹窗 - 求职简历模板风格 -->
+    <div class="modal-overlay" id="resume-modal">
+        <div class="resume-cv">
+            <!-- 关闭按钮 -->
+            <button class="close-btn" id="resume-close">×</button>
+
+            <!-- 简历头部 -->
+            <div class="cv-header">
+                <div class="cv-header-left">
+                    <h1 class="cv-name">张赐祈</h1>
+                    <div class="cv-contact">
+                        <span class="cv-contact-item"><span class="cv-icon">📞</span> 19859039818</span>
+                        <span class="cv-contact-item"><span class="cv-icon">✉️</span> 3150471443@qq.com</span>
+                    </div>
+                    <div class="cv-tags">
+                        <span class="cv-tag"><span class="cv-icon-tag">🎓</span> 在读</span>
+                        <span class="cv-tag"><span class="cv-icon-tag">💼</span> 软件测试员</span>
+                        <span class="cv-tag"><span class="cv-icon-tag">📍</span> 福州</span>
+                        <span class="cv-tag"><span class="cv-icon-tag">💰</span> 5000~7000元/月</span>
+                        <span class="cv-tag"><span class="cv-icon-tag">📋</span> 全日制</span>
+                    </div>
+                </div>
+                <div class="cv-header-right">
+                    <div class="cv-avatar">张</div>
+                </div>
+            </div>
+
+            <!-- 教育经历 -->
+            <div class="cv-section">
+                <div class="cv-section-title">
+                    <span class="cv-section-bar"></span>
+                    <span>教育经历</span>
+                </div>
+                <div class="cv-edu">
+                    <div class="cv-edu-header">
+                        <span class="cv-edu-school">福州软件职业技术学院</span>
+                        <span class="cv-edu-major">人工智能技术应用</span>
+                        <span class="cv-edu-date">2024-09 ~ 2027-07</span>
+                    </div>
+                    <div class="cv-edu-detail">
+                        <span>全日制</span>
+                        <span>福州软件职业技术学院</span>
+                        <span>福州长乐区</span>
+                    </div>
+                    <div class="cv-edu-cert">计算机一级证</div>
+                </div>
+            </div>
+
+            <!-- 专业技能 -->
+            <div class="cv-section">
+                <div class="cv-section-title">
+                    <span class="cv-section-bar"></span>
+                    <span>专业技能</span>
+                </div>
+                <div class="cv-skill">
+                    <div class="cv-skill-name">前端开发</div>
+                    <div class="cv-skill-desc">
+                        熟练使用 Vue、HTML/CSS/JavaScript 完成页面开发，独立落地 6 个企业官网项目；掌握 Element UI、Vite 工程化工具，兼容多端浏览器，页面加载速度优化 30%；可独立完成接口联调、页面交互逻辑开发。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 工作经历 -->
+            <div class="cv-section">
+                <div class="cv-section-title">
+                    <span class="cv-section-bar"></span>
+                    <span>工作经历</span>
+                </div>
+                <div class="cv-empty">暂无工作经历</div>
+            </div>
+
+            <!-- 项目经历 -->
+            <div class="cv-section">
+                <div class="cv-section-title">
+                    <span class="cv-section-bar"></span>
+                    <span>项目经历</span>
+                </div>
+                <div class="cv-empty">暂无项目经历</div>
             </div>
         </div>
     </div>
@@ -121,9 +305,14 @@
         <div class="overlay-content">
             <h2>恭喜！你赢了！</h2>
             <p class="final-score">最终得分：<span id="win-score">0</span></p>
+            <p class="final-detail">步数：<span id="win-moves">0</span> | 时长：<span id="win-time">00:00</span></p>
             <div class="overlay-buttons">
                 <button class="overlay-btn" id="retry-btn">再来一局</button>
                 <button class="overlay-btn continue-btn" id="continue-btn">继续游戏</button>
+            </div>
+            <div class="share-buttons">
+                <button class="share-btn" id="win-copy">复制战绩</button>
+                <button class="share-btn" id="win-screenshot">导出截图</button>
             </div>
         </div>
     </div>
@@ -132,7 +321,14 @@
         <div class="overlay-content">
             <h2>游戏结束！</h2>
             <p class="final-score">最终得分：<span id="final-score">0</span></p>
-            <button class="overlay-btn" id="restart-btn">重新开始</button>
+            <p class="final-detail">步数：<span id="gameover-moves">0</span> | 时长：<span id="gameover-time">00:00</span></p>
+            <div class="overlay-buttons">
+                <button class="overlay-btn" id="restart-btn">重新开始</button>
+            </div>
+            <div class="share-buttons">
+                <button class="share-btn" id="gameover-copy">复制战绩</button>
+                <button class="share-btn" id="gameover-screenshot">导出截图</button>
+            </div>
         </div>
     </div>
 
